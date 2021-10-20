@@ -1,0 +1,40 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach to MainApp",
+      "type": "coreclr",
+      "request": "attach",
+      "processName": "LNCDApp.MainApp",
+      "sourceFileMap": {
+        "/app/code": "${workspaceRoot}"
+      },
+      "pipeTransport": {
+        "pipeCwd": "${workspaceFolder}",
+        "pipeProgram": "docker",
+        "quoteArgs": false,
+        "pipeArgs": ["exec -i nameLower_mainapp_1"],
+        "debuggerPath": "/vsdbg/vsdbg"
+      }
+    },
+    {
+      "name": "Attach to Integration tests",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:pickRemoteProcess}",
+      "sourceFileMap": {
+        "/app/code": "${workspaceFolder}"
+      },
+      "requireExactSource": false,
+      "pipeTransport": {
+        "pipeCwd": "${workspaceFolder}",
+        "pipeProgram": "docker",
+        "quoteArgs": false,
+        "pipeArgs": [
+          "exec -i nameLower_integration_tests_1"
+        ],
+        "debuggerPath": "/vsdbg/vsdbg"
+      }
+    }
+  ]
+}

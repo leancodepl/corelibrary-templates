@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <AssemblyName>LNCDApp.DomainName.Services</AssemblyName>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../LNCDApp.DomainName.Contracts/LNCDApp.DomainName.Contracts.csproj" />
+    <ProjectReference Include="../LNCDApp.DomainName.Domain/LNCDApp.DomainName.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+
+    <PackageReference Include="Dapper" />
+
+    <PackageReference Include="LeanCode.Cache" />
+    <PackageReference Include="LeanCode.Components" />
+    <PackageReference Include="LeanCode.CQRS.Cache" />
+    <PackageReference Include="LeanCode.CQRS.Execution" />
+    <PackageReference Include="LeanCode.CQRS.Security" />
+    <PackageReference Include="LeanCode.CQRS.Validation.Fluent" />
+    <PackageReference Include="LeanCode.Dapper" />
+    <PackageReference Include="LeanCode.DomainModels.EF" />
+    <PackageReference Include="LeanCode.DomainModels.MassTransitRelay" />
+
+    <PackageReference Include="MassTransit" />
+
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+
+  </ItemGroup>
+</Project>

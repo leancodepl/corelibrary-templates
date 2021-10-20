@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../../src/DomainName/LNCDApp.DomainName.Services/LNCDApp.DomainName.Services.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,158 @@
+version: "3.6"
+services:
+  #### Apps
+  mainapp:
+    build:
+      context: ..
+      dockerfile: dev/Dockerfile.mainapp
+      args:
+        - APP_VERSION=0.0.1-dev
+    labels:
+      - "traefik.http.routers.api.rule=Host(`mainapp.local.lncd.pl`)"
+      - "traefik.http.routers.api.tls=true"
+    volumes:
+      - ../:/app/code
+      - ~/.nuget:/home/dotnet/.nuget
+    networks:
+      default:
+        aliases:
+          - mainapp
+          - mainapp.local.lncd.pl
+    depends_on:
+      - db
+      - proxy
+      - logs
+      - storage
+      - zipkin
+
+  tests:
+    build:
+      context: ..
+      dockerfile: dev/Dockerfile.tests
+      args:
+        - APP_VERSION=0.0.1-dev
+    volumes:
+      - ../:/app/code
+      - ~/.nuget:/home/dotnet/.nuget
+
+  integration_tests:
+    build:
+      context: ..
+      dockerfile: dev/Dockerfile.integration_tests
+      args:
+        - APP_VERSION=0.0.1-dev
+    environment:
+      - WAIT_FOR_DEBUGGER=${WAIT_FOR_DEBUGGER:-}
+      - TESTS_FQN=${TESTS_FQN:-}
+    volumes:
+      - ../:/app/code
+      - ~/.nuget:/home/dotnet/.nuget
+    depends_on:
+      - db
+
+  #### One-shot apps
+  migrations:
+    build:
+      context: ..
+      dockerfile: dev/Dockerfile.migrations
+      args:
+        - APP_VERSION=0.0.1-dev
+    volumes:
+      - ../:/app/code
+      - ~/.nuget:/home/dotnet/.nuget
+    depends_on:
+      - db
+
+  seed:
+    build:
+      context: ..
+      dockerfile: dev/Dockerfile.migrations
+      args:
+        - APP_VERSION=0.0.1-dev
+    environment:
+      - SEED=1
+    volumes:
+      - ../:/app/code
+      - ~/.nuget:/home/dotnet/.nuget
+    depends_on:
+      - db
+
+  #### Infrastructure
+  proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile.proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Passw12#
+    volumes:
+      - database:/var/opt/mssql
+    networks:
+      default:
+        aliases:
+          - db
+          - db.local.lncd.pl
+
+  storage:
+    image: mcr.microsoft.com/azure-storage/azurite
+    command: ["azurite-blob", "-l", "/data", "--blobHost", "0.0.0.0"]
+    ports:
+      - "10000:10000"
+    environment:
+      - executable=blob
+    labels:
+      - "traefik.http.routers.storage.rule=Host(`storage.local.lncd.pl`)"
+      - "traefik.http.routers.storage.tls=true"
+    volumes:
+      - storage:/data
+    networks:
+      default:
+        aliases:
+          - storage
+          - storage.local.lncd.pl
+
+  logs:
+    image: datalust/seq
+    environment:
+      - ACCEPT_EULA=Y
+    labels:
+      - "traefik.http.routers.seq.rule=Host(`seq.local.lncd.pl`)"
+      - "traefik.http.routers.seq.tls=true"
+    volumes:
+      - seq:/data
+    networks:
+      default:
+        aliases:
+          - seq
+          - seq.local.lncd.pl
+
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+    labels:
+      - "traefik.http.routers.zipkin.rule=Host(`zipkin.local.lncd.pl`)"
+      - "traefik.http.routers.zipkin.tls=true"
+      - "traefik.http.services.zipkin.loadbalancer.server.port=9411"
+    networks:
+      default:
+        aliases:
+          - zipkin
+          - zipkin.local.lncd.pl
+volumes:
+  database:
+  storage:
+  seq:
+  zipkin:

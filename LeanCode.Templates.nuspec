@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>LeanCode.Templates</id>
+    <version>0.1.0</version>
+    <title>LeanCode Templates</title>
+    <authors>LeanCode</authors>
+    <description>Basic LeanCode templates for .NET.</description>
+    <tags>.NET LeanCode</tags>
+    <language>en-US</language>
+    <projectUrl>https://github.com/leancodepl/corelibrary-template</projectUrl>
+    <packageTypes>
+      <packageType name="Template" />
+    </packageTypes>
+  </metadata>
+  <files>
+    <file src="**" exclude="**\bin\**\*;**\obj\**\*;**\*.user;**\*.lock.json;**\*.rsa" />
+  </files>
+</package>

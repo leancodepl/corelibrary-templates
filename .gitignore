@@ -1,0 +1,7 @@
+**/.DS_Store
+**/.npmrc
+**/local_config.sh
+**/bin
+**/obj
+templates/*.nupkg
+**/*.keystore

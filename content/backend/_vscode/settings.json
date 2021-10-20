@@ -1,0 +1,13 @@
+{
+  "files.exclude": {
+    ".fake": true,
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/bin": true,
+    "**/obj": true,
+    "**/node_modules": true,
+    "packages": true,
+    "deploy": true,
+    ".vs": true
+  }
+}
