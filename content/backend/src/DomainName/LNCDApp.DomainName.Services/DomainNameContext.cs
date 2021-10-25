@@ -43,12 +43,12 @@ namespace LNCDApp.DomainName.Services
             return new DomainNameContext(user, default);
         }
 
-        private Guid ParseUserClaim(string claimType)
+        private static Guid ParseUserClaim(ClaimsPrincipal? user, string claimType)
         {
-            if (User?.Identity?.IsAuthenticated ?? false)
+            if (user?.Identity?.IsAuthenticated ?? false)
             {
-                var str = User.FindFirstValue(claimType);
-                Guid.TryParse(str, out var res);
+                var str = user.FindFirstValue(claimType);
+                _ = Guid.TryParse(str, out var res);
                 return res;
             }
             else
