@@ -246,5 +246,9 @@ infrastructure/**/*.tfstate*
 **/secrets.sh
 **/dist
 
+dev/proxy/*.pem
+dev/proxy/*.crt
+dev/proxy/*.key
+
 !dev/**/.env
 !release/
