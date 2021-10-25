@@ -23,6 +23,7 @@ namespace LNCDApp.Migrations
         protected override void MigrateAll()
         {
             Migrate<DomainNameDbContext, DomainNameDbContextFactory>();
+            Migrate<PersistedGrantDbContext, PersistedGrantDbContextFactory>();
         }
     }
 
