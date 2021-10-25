@@ -2,7 +2,6 @@ using Autofac;
 using LeanCode.Components;
 using LNCDApp.DomainName.Services.DataAccess;
 using LNCDApp.DomainName.Services.DataAccess.Entities;
-using LNCDApp.DomainName.Services.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +30,7 @@ namespace LNCDApp.DomainName.Services
             services.Configure<IdentityOptions>(options =>
             {
                 options.User.AllowedUserNameCharacters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&'*+-/=?^_`{|}~.""(),:;<>@[\] ";
-                options.Password.RequiredLength = IdentityUserManager.MinimalPasswordLength;
+                options.Password.RequiredLength = 1;
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
@@ -44,11 +43,6 @@ namespace LNCDApp.DomainName.Services
             var self = typeof(DomainNameModule).Assembly;
 
             builder.Register(c => c.Resolve<DomainNameDbContext>())
-                .AsImplementedInterfaces();
-
-            builder.RegisterAssemblyTypes(self)
-                .InNamespaceOf<IdentityUserManager>()
-                .AsSelf()
                 .AsImplementedInterfaces();
         }
     }
