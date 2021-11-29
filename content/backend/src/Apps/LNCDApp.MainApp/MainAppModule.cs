@@ -1,4 +1,3 @@
-using System;
 using Autofac;
 using LeanCode.AzureIdentity;
 using LeanCode.Components;

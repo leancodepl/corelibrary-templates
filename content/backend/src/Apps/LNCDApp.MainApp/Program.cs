@@ -8,10 +8,7 @@ namespace LNCDApp.MainApp
 {
     public class Program
     {
-        public static Task Main()
-        {
-            return CreateWebHostBuilder().Build().RunAsync();
-        }
+        public static Task Main() => CreateWebHostBuilder().Build().RunAsync();
 
         public static IHostBuilder CreateWebHostBuilder()
         {

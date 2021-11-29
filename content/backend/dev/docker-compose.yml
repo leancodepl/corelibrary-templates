@@ -19,7 +19,7 @@ services:
           - mainapp
           - mainapp.local.lncd.pl
     depends_on:
-      - db
+      - mssql
       - proxy
       - logs
       - storage
@@ -48,7 +48,7 @@ services:
       - ../:/app/code
       - ~/.nuget:/home/dotnet/.nuget
     depends_on:
-      - db
+      - mssql
 
   #### One-shot apps
   migrations:
@@ -61,7 +61,7 @@ services:
       - ../:/app/code
       - ~/.nuget:/home/dotnet/.nuget
     depends_on:
-      - db
+      - mssql
 
   seed:
     build:
@@ -75,7 +75,7 @@ services:
       - ../:/app/code
       - ~/.nuget:/home/dotnet/.nuget
     depends_on:
-      - db
+      - mssql
 
   #### Infrastructure
   proxy:
@@ -90,7 +90,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
-  db:
+  mssql:
     image: mcr.microsoft.com/mssql/server:2019-latest
     ports:
       - "1433:1433"
@@ -98,15 +98,15 @@ services:
       - ACCEPT_EULA=Y
       - SA_PASSWORD=Passw12#
     volumes:
-      - database:/var/opt/mssql
+      - mssql:/var/opt/mssql
     networks:
       default:
         aliases:
-          - db
-          - db.local.lncd.pl
+          - mssql
+          - mssql.local.lncd.pl
 
   storage:
-    image: mcr.microsoft.com/azure-storage/azurite
+    image: mcr.microsoft.com/azure-storage/azurite:3.14.0
     command: ["azurite-blob", "-l", "/data", "--blobHost", "0.0.0.0"]
     ports:
       - "10000:10000"
@@ -152,7 +152,7 @@ services:
           - zipkin
           - zipkin.local.lncd.pl
 volumes:
-  database:
+  mssql:
   storage:
   seq:
   zipkin:

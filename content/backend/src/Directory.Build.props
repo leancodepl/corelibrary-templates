@@ -11,9 +11,9 @@
     <OutputType>library</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <DebugType>portable</DebugType>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>preview</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <ImplicitUsings>enabled</ImplicitUsings>
+    <ImplicitUsings>enable</ImplicitUsings>
 
     <AssemblyVersion>9.9.9.9</AssemblyVersion>
     <Version>$(APP_VERSION)</Version>

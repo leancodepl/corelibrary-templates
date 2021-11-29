@@ -23,8 +23,8 @@ spec:
               cpu: 50m
               memory: 200Mi
           env:
-            - name: ConnectionStrings__Database
+            - name: SqlServer__ConnectionString
               valueFrom:
                 secretKeyRef:
                   name: nameLower-migrations
-                  key: ConnectionStrings__Database
+                  key: SqlServer__ConnectionString

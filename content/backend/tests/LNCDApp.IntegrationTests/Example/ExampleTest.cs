@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using LNCDApp.DomainName.Contracts.Example;
 using Xunit;
 
