@@ -1,6 +1,4 @@
-using System;
 using System.Security.Claims;
-using System.Threading;
 using LeanCode.CQRS.Security;
 using LeanCode.Pipelines;
 using LNCDApp.DomainName.Contracts;

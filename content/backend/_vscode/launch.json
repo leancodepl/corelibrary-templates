@@ -13,7 +13,7 @@
         "pipeCwd": "${workspaceFolder}",
         "pipeProgram": "docker",
         "quoteArgs": false,
-        "pipeArgs": ["exec -i nameLower_mainapp_1"],
+        "pipeArgs": ["exec -i nameLower-mainapp-1"],
         "debuggerPath": "/vsdbg/vsdbg"
       }
     },
@@ -31,7 +31,7 @@
         "pipeProgram": "docker",
         "quoteArgs": false,
         "pipeArgs": [
-          "exec -i nameLower_integration_tests_1"
+          "exec -i nameLower-integration_tests-1"
         ],
         "debuggerPath": "/vsdbg/vsdbg"
       }

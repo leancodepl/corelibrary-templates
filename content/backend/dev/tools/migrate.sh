@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-echo "Waiting for MSSQL to start"
-sleep 5
-
 echo "Restoring & building"
 dotnet restore
 dotnet build --no-restore

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using LeanCode.CQRS.Security;
 
 using R = LNCDApp.DomainName.Contracts.Auth.Roles;

@@ -1,4 +1,3 @@
-using System;
 using LNCDApp.DomainName.Services.CQRS.Example;
 using Xunit;
 

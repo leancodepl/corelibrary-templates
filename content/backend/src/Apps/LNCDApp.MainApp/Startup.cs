@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using LeanCode.Cache.AspNet;
 using LeanCode.Components;
 using LeanCode.Components.Startup;

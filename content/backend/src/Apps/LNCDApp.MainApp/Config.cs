@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Autofac;
 using LeanCode;
 using LeanCode.IdentityServer.KeyVault;
@@ -42,7 +39,7 @@ namespace LNCDApp.MainApp
 
         public static class BlobStorage
         {
-            public static string ConnectionString(IConfiguration cfg) => cfg.GetString("SqlServer:ConnectionString");
+            public static string ConnectionString(IConfiguration cfg) => cfg.GetString("BlobStorage:ConnectionString");
         }
 
         public static class MassTransit

@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using FluentValidation;
 using LeanCode.CQRS.Execution;
 using LeanCode.CQRS.Validation.Fluent;
@@ -10,12 +9,9 @@ namespace LNCDApp.DomainName.Services.CQRS.Example
     {
         public ExampleCommandCV()
         {
-            RuleFor(c => c.Arg)
-                .Cascade(CascadeMode.Stop)
-                .NotNull()
-                .WithCode(ExampleCommand.ErrorCodes.EmptyArg)
+            RuleFor(cmd => cmd.Arg)
                 .NotEmpty()
-                .WithCode(ExampleCommand.ErrorCodes.EmptyArg);
+                    .WithCode(ExampleCommand.ErrorCodes.EmptyArg);
         }
     }
 

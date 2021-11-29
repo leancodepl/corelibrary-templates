@@ -1,4 +1,3 @@
-using System.Linq;
 using LeanCode.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
