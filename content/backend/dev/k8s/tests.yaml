@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lncdapp-tests
+  namespace: lncdapp-dev
+  labels:
+    app: lncdapp-tests
+spec:
+  restartPolicy: Never
+  containers:
+  - name: tests
+    image: lncdapp-tests
+    resources:
+      requests:
+        cpu: '500m'
+        memory: '200Mi'
+      limits:
+        cpu: '4'
+        memory: '4Gi'

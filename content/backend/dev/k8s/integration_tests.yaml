@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: lncdapp-integration-tests
+  namespace: lncdapp-dev
+  labels:
+    app: lncdapp-integration-tests
+spec:
+  restartPolicy: Never
+  containers:
+  - name: tests
+    image: lncdapp-integration-tests
+    ports:
+      - containerPort: 22
+    resources:
+      requests:
+        cpu: '500m'
+        memory: '200Mi'
+      limits:
+        cpu: '4'
+        memory: '4Gi'

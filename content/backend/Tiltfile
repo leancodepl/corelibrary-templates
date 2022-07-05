@@ -1,0 +1,102 @@
+load('ext://restart_process', 'docker_build_with_restart')
+default_registry('k3d-lncdapp-registry.local.lncd.pl:21345')
+
+local_resource(
+  'build-mainapp',
+  'dotnet publish --no-build -o dev/out/mainapp src/Apps/LncdApp.MainApp',
+  dir='.',
+  deps=['src', 'tests', 'LncdApp.sln', 'Directory.Build.targets'],
+  ignore=['**/obj', '**/bin'],
+  env={ 'APP_VERSION': '0.0.1-dev' },
+  labels=['app']
+)
+
+local_resource(
+  'build-migrations',
+  'dotnet publish --no-build -o dev/out/migrations src/Apps/LncdApp.Migrations',
+  dir='.',
+  deps=['src', 'tests', 'LncdApp.sln', 'Directory.Build.targets'],
+  ignore=['**/obj', '**/bin'],
+  env={ 'APP_VERSION': '0.0.1-dev' },
+  labels=['app']
+)
+
+local_resource(
+  'build-tests',
+  'dotnet publish --no-build -o dev/out/tests tests/LncdApp.Tests.csproj',
+  dir='.',
+  deps=['src', 'tests', 'LncdApp.sln', 'Directory.Build.targets'],
+  ignore=['**/obj', '**/bin'],
+  env={ 'APP_VERSION': '0.0.1-dev' },
+  labels=['tests']
+)
+
+local_resource(
+  'build-integration-tests',
+  'dotnet publish --no-build -o dev/out/integration_tests tests/LncdApp.IntegrationTests',
+  dir='.',
+  deps=['src', 'tests/LncdApp.IntegrationTests', 'LncdApp.sln', 'Directory.Build.targets'],
+  ignore=['**/obj', '**/bin'],
+  env={ 'APP_VERSION': '0.0.1-dev' },
+  labels=['tests']
+)
+
+docker_build_with_restart(
+  'lncdapp-mainapp',
+  context='dev',
+  dockerfile='dev/Dockerfile.mainapp',
+  entrypoint='/app/config/run.sh',
+  only=['out/mainapp', 'config', 'sshd_config'],
+  live_update=[
+    sync('dev/out/mainapp', '/app/bin'),
+    sync('dev/config', '/app/config'),
+  ],
+)
+
+docker_build_with_restart(
+  'lncdapp-migrations',
+  context='dev',
+  entrypoint='/app/config/migrate.sh',
+  dockerfile='dev/Dockerfile.migrations',
+  only=['out/migrations', 'config'],
+  live_update=[
+    sync('dev/out/migrations', '/app/bin'),
+    sync('dev/config', '/app/config'),
+  ],
+)
+
+docker_build_with_restart(
+  'lncdapp-tests',
+  context='dev',
+  dockerfile='dev/Dockerfile.tests',
+  entrypoint='dotnet vstest *.Tests.dll; sleep 3600',
+  only=['out/tests', 'config'],
+  live_update=[
+    sync('dev/out/tests', '/app/bin'),
+    sync('dev/config', '/app/config'),
+  ],
+)
+
+docker_build_with_restart(
+  'lncdapp-integration-tests',
+  context='dev',
+  dockerfile='dev/Dockerfile.integration_tests',
+  entrypoint='/app/config/run_tests.sh',
+  only=['out/integration_tests', 'config', 'sshd_config'],
+  live_update=[
+    sync('dev/out/integration_tests', '/app/bin'),
+    sync('dev/config', '/app/config'),
+  ],
+)
+
+k8s_yaml('dev/k8s/mainapp.yaml')
+k8s_yaml('dev/k8s/migrations.yaml')
+k8s_yaml('dev/k8s/tests.yaml')
+k8s_yaml('dev/k8s/integration_tests.yaml')
+
+k8s_resource('lncdapp-mainapp', new_name='mainapp', resource_deps=['build-mainapp'], labels=['app'])
+k8s_resource('lncdapp-migrations', new_name='migrations', resource_deps=['build-migrations'], trigger_mode=TRIGGER_MODE_MANUAL, labels=['app'])
+k8s_resource('lncdapp-tests', new_name='tests', resource_deps=['build-tests'], labels=['tests'])
+k8s_resource('lncdapp-integration-tests', new_name='integration_tests', resource_deps=['build-integration-tests'], labels=['tests'])
+
+# vim:set sw=2 ts=2:

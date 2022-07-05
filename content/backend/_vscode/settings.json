@@ -8,6 +8,8 @@
     "**/node_modules": true,
     "packages": true,
     "deploy": true,
-    ".vs": true
+    ".vs": true,
+    "tilt_modules": true,
+    "dev/out": true
   }
 }

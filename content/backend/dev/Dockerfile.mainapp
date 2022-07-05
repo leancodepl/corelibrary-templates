@@ -19,13 +19,10 @@ ENV ASPNETCORE_URLS=http://*:8080
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV APP_VERSION=${APP_VERSION}
 ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
-EXPOSE 8080
 
-WORKDIR /app
-COPY Docker.Directory.Build.props Directory.Build.props
+COPY --chown=dotnet config /app/config
+COPY --chown=dotnet out/mainapp /app/bin
 
-WORKDIR /app/code/src/Apps/LNCDApp.MainApp
+WORKDIR /app/code/src/Apps/LncdApp.MainApp
 SHELL ["/bin/bash", "-c"]
-ENTRYPOINT source /app/code/dev/config/config.sh && \
-    dotnet restore && \
-    dotnet watch run --no-restore
+ENTRYPOINT /app/config/run.sh

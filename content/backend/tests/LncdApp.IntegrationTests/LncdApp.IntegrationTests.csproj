@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>LncdApp.IntegrationTests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../src/Apps/LncdApp.MainApp/LncdApp.MainApp.csproj" />
+    <ProjectReference Include="../../src/DomainName/LncdApp.DomainName.Services/LncdApp.DomainName.Services.csproj" />
+
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+
+    <PackageReference Include="LeanCode.CQRS.RemoteHttp.Client" />
+    <PackageReference Include="LeanCode.IntegrationTestHelpers" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WebApplicationFactoryContentRootAttribute
+      Include="LncdApp.IntegrationTests"
+      AssemblyName="LncdApp.IntegrationTests"
+      ContentRootPath="$(MSBuildProjectDirectory)"
+      ContentRootTest="LncdApp.IntegrationTests.csproj"
+      Priority="-1" />
+  </ItemGroup>
+
+</Project>

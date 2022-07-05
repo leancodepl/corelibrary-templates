@@ -1,0 +1,260 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "LeanCode",
+  "name": "LeanCode Backend App",
+  "identity": "LeanCode.Templates.Backend",
+  "groupIdentity": "LeanCode.Templates.Backend",
+  "description": "Initializes basic LNCD-style backend project (without front-end stack)",
+  "shortName": "backend",
+  "classifications": [
+    "LeanCode",
+    "Web"
+  ],
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "LncdApp",
+  "preferNameDirectory": false,
+  "primaryOutputs": [
+    {
+      "path": "LncdApp.sln"
+    },
+    {
+      "path": "README.md"
+    }
+  ],
+  "sources": [
+    {
+      "source": "./",
+      "target": "./",
+      "rename": {
+        "backend/_vscode/settings.json": ".vscode/settings.json",
+        "backend/_vscode/launch.json": ".vscode/launch.json",
+        "backend/_dockerignore": ".dockerignore",
+        "backend/_editorconfig": ".editorconfig",
+        "backend/_gitattributes": ".gitattributes",
+        "backend/_gitignore": ".gitignore",
+        "dev-cluster/_gitignore": ".gitignore"
+      },
+      // Generated symbols cannot participate in file rename :(
+      "modifiers": [
+        {
+          "condition": "(AppName == \"Web\")",
+          "rename": {
+            "backend/dev/Dockerfile.mainapp": "backend/dev/Dockerfile.web",
+            "backend/dev/k8s/mainapp.yaml": "backend/dev/web.yaml",
+            "backend/release/mainapp.yaml.tpl": "backend/release/web.yaml.tpl",
+            "backend/release/Dockerfile.mainapp": "backend/release/Dockerfile.web"
+          }
+        },
+        {
+          "condition": "(AppName == \"Api\")",
+          "rename": {
+            "backend/dev/Dockerfile.mainapp": "backend/dev/Dockerfile.api",
+            "backend/dev/k8s/mainapp.yaml": "backend/dev/api.yaml",
+            "backend/release/mainapp.yaml.tpl": "backend/release/api.yaml.tpl",
+            "backend/release/Dockerfile.mainapp": "backend/release/Dockerfile.api"
+          }
+        },
+        {
+          "condition": "(AppName == \"App\")",
+          "rename": {
+            "backend/dev/Dockerfile.mainapp": "backend/dev/Dockerfile.app",
+            "backend/dev/k8s/mainapp.yaml": "backend/dev/app.yaml",
+            "backend/release/mainapp.yaml.tpl": "backend/release/app.yaml.tpl",
+            "backend/release/Dockerfile.mainapp": "backend/release/Dockerfile.app"
+          }
+        }
+      ]
+    }
+  ],
+  "guids": [
+    "627B9E42-72F7-4F86-9676-AE220306EDFA", // src
+    "6C66D4E1-4E10-450C-A244-C60F6DB57216", // src/Apps
+    "74A9BDDC-ECE6-4489-954A-039AD69A1154", // src/DomainName
+    "39F9A57F-19D3-48C2-99FA-1F3FBBA1CD80", // tests
+    "01E2F899-EA55-401A-867C-1EE10D42383A", // tests/DomainName
+    "E7E47162-391F-46BC-A25F-6FF073A50574", // LncdApp.MainApp
+    "8BF3562C-8B85-432E-912C-1D55C8A24BF3", // LncdApp.Migrations
+    "FB49D89C-C780-4498-B22C-7A01D4791585", // LncdApp.Auth.Contracts
+    "447FA5EA-894B-4639-B85A-22A97A3BC632", // LncdApp.DomainName.Contracts.Area
+    "8C6FD91A-DD0C-48C7-99C2-D8E2A18928CB", // LncdApp.DomainName.Domain
+    "EB91A07D-B4B5-4EE9-86D2-EBDE80F6C367", // LncdApp.DomainName.Services
+    "933BFD14-E12A-4561-8938-0037CD34467E", // LncdApp.DomainName.Domain.Tests
+    "1EE0BC8E-9A1A-4AB8-8A86-C77A8D4A0218", // LncdApp.DomainName.Services.Tests
+    "FCF7AB45-7BB8-485E-A44B-F6E6EC23FFE4", // LncdApp.IntegrationTests
+    "C75CC050-C06B-4761-A445-E75226C31B7D" // LncdApp.Tests
+  ],
+  "symbols": {
+    "domain": {
+      "type": "parameter",
+      "datatype": "text",
+      "replaces": "DomainName",
+      "fileRename": "DomainName",
+      "defaultValue": "Core",
+      "description": "Name of the main domain in the system."
+    },
+    "area": {
+      "type": "parameter",
+      "datatype": "text",
+      "replaces": "Area",
+      "fileRename": "Area",
+      "defaultValue": "Mobile",
+      "description": "Main area (client app) that the system supports."
+    },
+    "dockerrepository": {
+      "type": "parameter",
+      "datatype": "text",
+      "replaces": "dockerrepository",
+      "fileRename": "DockerRepository",
+      "defaultValue": "leancode.azurecr.io",
+      "description": "Your private Docker repository where final images will be stored."
+    },
+    "AppName": {
+      "type": "parameter",
+      "datatype": "choice",
+      "choices": [
+        {
+          "choice": "Web"
+        },
+        {
+          "choice": "Api"
+        },
+        {
+          "choice": "App"
+        }
+      ],
+      "defaultValue": "Api",
+      "replaces": "MainApp",
+      "fileRename": "MainApp",
+      "description": "The name of the root app."
+    },
+    // Switches
+    "SkipRestore": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "Skips the execution of 'dotnet restore' on project creation.",
+      "defaultValue": "false"
+    },
+    "SkipOpenReadMe": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "Skips the opening of the projects Read-Me in a web browser.",
+      "defaultValue": "false"
+    },
+    // Lowercase versions
+    "domainLower": {
+      "type": "generated",
+      "generator": "casing",
+      "parameters": {
+        "source": "domain",
+        "toLower": true
+      },
+      "replaces": "domain_lower",
+      "fileRename": "domain_lower"
+    },
+    "areaLower": {
+      "type": "generated",
+      "generator": "casing",
+      "parameters": {
+        "source": "area",
+        "toLower": true
+      },
+      "replaces": "area_lower",
+      "fileRename": "area_lower"
+    },
+    "appNameLower": {
+      "type": "generated",
+      "generator": "casing",
+      "parameters": {
+        "source": "AppName",
+        "toLower": true
+      },
+      "replaces": "mainapp"
+    },
+    "appNameUpper": {
+      "type": "generated",
+      "generator": "casing",
+      "parameters": {
+        "source": "AppName",
+        "toLower": false
+      },
+      "replaces": "MAIN_APP"
+    },
+    "nameLower": {
+      "type": "generated",
+      "generator": "casing",
+      "parameters": {
+        "source": "name",
+        "toLower": true
+      },
+      "replaces": "lncdapp"
+    },
+    "nameUpper": {
+      "type": "generated",
+      "generator": "casing",
+      "parameters": {
+        "source": "name",
+        "toLower": false
+      },
+      "replaces": "LNCD_APP"
+    }
+  },
+  "postActions": [
+    {
+      "condition": "(OS != \"Windows_NT\")",
+      "description": "Make scripts executable",
+      "actionId": "CB9A6CF3-4F5C-4860-B9D2-03A574959774",
+      "manualInstructions": [
+        {
+          "text": "Run 'chmod +x **/*.sh'"
+        }
+      ],
+      "args": {
+        "+x": ["*/*.sh", "*/*/*.sh"]
+      },
+      "continueOnError": true
+    },
+    {
+      "condition": "(!SkipRestore)",
+      "description": "Restore NuGet packages required by this project.",
+      "actionId": "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
+      "manualInstructions": [
+        {
+          "text": "Run 'dotnet restore'"
+        }
+      ],
+      "continueOnError": true
+    },
+    {
+      "description": "Fix formatting issues (mainly unsorted namespaces)",
+      "actionId": "3A7C4B45-1F5D-4A30-959A-51B88E82B5D2",
+      "manualInstructions": [
+        {
+          "text": "Run `dotnet format --severity warn` or fix'em errors manually"
+        }
+      ],
+      "args": {
+        "executable": "dotnet",
+        "args": "format --severity warn",
+        "redirectStandardOutput": false
+      },
+      "continueOnError": true
+    },
+    {
+      "condition": "(!SkipOpenReadMe)",
+      "description": "Open the README.md and fill with some meaningful quote.",
+      "actionId": "84C0DA21-51C8-4541-9940-6CA19AF04EE6",
+      "manualInstructions": [
+        {
+          "text": "Open the README.md and fill with some meaningful quote."
+        }
+      ],
+      "args": {
+        "files": "1"
+      },
+      "continueOnError": true
+    }
+  ]
+}
