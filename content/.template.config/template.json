@@ -43,7 +43,7 @@
           "condition": "(AppName == \"Web\")",
           "rename": {
             "backend/dev/Dockerfile.mainapp": "backend/dev/Dockerfile.web",
-            "backend/dev/k8s/mainapp.yaml": "backend/dev/web.yaml",
+            "backend/dev/k8s/mainapp.yaml": "backend/dev/k8s/web.yaml",
             "backend/release/mainapp.yaml.tpl": "backend/release/web.yaml.tpl",
             "backend/release/Dockerfile.mainapp": "backend/release/Dockerfile.web"
           }
@@ -52,7 +52,7 @@
           "condition": "(AppName == \"Api\")",
           "rename": {
             "backend/dev/Dockerfile.mainapp": "backend/dev/Dockerfile.api",
-            "backend/dev/k8s/mainapp.yaml": "backend/dev/api.yaml",
+            "backend/dev/k8s/mainapp.yaml": "backend/dev/k8s/api.yaml",
             "backend/release/mainapp.yaml.tpl": "backend/release/api.yaml.tpl",
             "backend/release/Dockerfile.mainapp": "backend/release/Dockerfile.api"
           }
@@ -61,7 +61,7 @@
           "condition": "(AppName == \"App\")",
           "rename": {
             "backend/dev/Dockerfile.mainapp": "backend/dev/Dockerfile.app",
-            "backend/dev/k8s/mainapp.yaml": "backend/dev/app.yaml",
+            "backend/dev/k8s/mainapp.yaml": "backend/dev/k8s/app.yaml",
             "backend/release/mainapp.yaml.tpl": "backend/release/app.yaml.tpl",
             "backend/release/Dockerfile.mainapp": "backend/release/Dockerfile.app"
           }
@@ -212,7 +212,10 @@
         }
       ],
       "args": {
-        "+x": ["../*/*.sh", "../*/*/*.sh"]
+        "+x": [
+          "../*/*.sh",
+          "../*/*/*.sh"
+        ]
       },
       "continueOnError": true
     },
