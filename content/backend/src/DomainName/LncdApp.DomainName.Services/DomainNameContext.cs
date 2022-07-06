@@ -4,55 +4,54 @@ using LeanCode.Pipelines;
 using LncdApp.DomainName.Contracts;
 using Microsoft.AspNetCore.Http;
 
-namespace LncdApp.DomainName.Services
+namespace LncdApp.DomainName.Services;
+
+public class DomainNameContext : ISecurityContext
 {
-    public class DomainNameContext : ISecurityContext
+    IPipelineScope IPipelineContext.Scope { get; set; } = null!;
+
+    public ClaimsPrincipal User { get; }
+    public CancellationToken CancellationToken { get; }
+
+    private DomainNameContext(ClaimsPrincipal user, CancellationToken cancellationToken)
     {
-        IPipelineScope IPipelineContext.Scope { get; set; } = null!;
+        User = user;
+        CancellationToken = cancellationToken;
+    }
 
-        public ClaimsPrincipal User { get; }
-        public CancellationToken CancellationToken { get; }
+    public static DomainNameContext FromHttp(HttpContext httpContext)
+    {
+        return new DomainNameContext(httpContext.User, httpContext.RequestAborted);
+    }
 
-        private DomainNameContext(ClaimsPrincipal user, CancellationToken cancellationToken)
+    private static DomainNameContext ForTests(Guid userId, string role)
+    {
+        var claims = new[]
         {
-            User = user;
-            CancellationToken = cancellationToken;
+            new Claim(Auth.KnownClaims.UserId, userId.ToString()),
+            new Claim(Auth.KnownClaims.Role, role),
+        };
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(
+            claims: claims,
+            authenticationType: "internal",
+            nameType: Auth.KnownClaims.UserId,
+            roleType: Auth.KnownClaims.Role));
+
+        return new DomainNameContext(user, default);
+    }
+
+    private static Guid ParseUserClaim(ClaimsPrincipal? user, string claimType)
+    {
+        if (user?.Identity?.IsAuthenticated ?? false)
+        {
+            var str = user.FindFirstValue(claimType);
+            _ = Guid.TryParse(str, out var res);
+            return res;
         }
-
-        public static DomainNameContext FromHttp(HttpContext httpContext)
+        else
         {
-            return new DomainNameContext(httpContext.User, httpContext.RequestAborted);
-        }
-
-        private static DomainNameContext ForTests(Guid userId, string role)
-        {
-            var claims = new[]
-            {
-                new Claim(Auth.KnownClaims.UserId, userId.ToString()),
-                new Claim(Auth.KnownClaims.Role, role),
-            };
-
-            var user = new ClaimsPrincipal(new ClaimsIdentity(
-                claims: claims,
-                authenticationType: "internal",
-                nameType: Auth.KnownClaims.UserId,
-                roleType: Auth.KnownClaims.Role));
-
-            return new DomainNameContext(user, default);
-        }
-
-        private static Guid ParseUserClaim(ClaimsPrincipal? user, string claimType)
-        {
-            if (user?.Identity?.IsAuthenticated ?? false)
-            {
-                var str = user.FindFirstValue(claimType);
-                _ = Guid.TryParse(str, out var res);
-                return res;
-            }
-            else
-            {
-                return Guid.Empty;
-            }
+            return Guid.Empty;
         }
     }
 }

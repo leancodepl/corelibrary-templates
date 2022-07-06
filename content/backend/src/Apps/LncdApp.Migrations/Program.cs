@@ -8,49 +8,48 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace LncdApp.Migrations
+namespace LncdApp.Migrations;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
-        {
-            new Migrator().Run(args);
-        }
+        new Migrator().Run(args);
     }
+}
 
-    internal class Migrator : LeanCode.EFMigrator.Migrator
+internal class Migrator : LeanCode.EFMigrator.Migrator
+{
+    protected override void MigrateAll()
     {
-        protected override void MigrateAll()
-        {
-            Migrate<DomainNameDbContext, DomainNameDbContextFactory>();
-            Migrate<PersistedGrantDbContext, PersistedGrantDbContextFactory>();
-        }
+        Migrate<DomainNameDbContext, DomainNameDbContextFactory>();
+        Migrate<PersistedGrantDbContext, PersistedGrantDbContextFactory>();
     }
+}
 
-    internal class DomainNameDbContextFactory : BaseFactory<DomainNameDbContext, DomainNameDbContextFactory> { }
+internal class DomainNameDbContextFactory : BaseFactory<DomainNameDbContext, DomainNameDbContextFactory> { }
 
-    public class PersistedGrantDbContextFactory : IDesignTimeDbContextFactory<PersistedGrantDbContext>
+public class PersistedGrantDbContextFactory : IDesignTimeDbContextFactory<PersistedGrantDbContext>
+{
+    protected virtual string AssemblyName => typeof(PersistedGrantDbContextFactory).Assembly.GetName().Name!;
+
+    public PersistedGrantDbContext CreateDbContext(string[] args)
     {
-        protected virtual string AssemblyName => typeof(PersistedGrantDbContextFactory).Assembly.GetName().Name!;
+        var builder = new DbContextOptionsBuilder<PersistedGrantDbContext>()
+            .UseLoggerFactory(new ServiceCollection()
+                .AddLogging(cfg => cfg.AddConsole())
+                .BuildServiceProvider()
+                .GetRequiredService<ILoggerFactory>())
+            .UseSqlServer(
+                MigrationsConfig.GetConnectionString()
+                ?? throw new InvalidOperationException("Connection string missing"),
+                cfg => cfg.MigrationsAssembly(AssemblyName));
 
-        public PersistedGrantDbContext CreateDbContext(string[] args)
-        {
-            var builder = new DbContextOptionsBuilder<PersistedGrantDbContext>()
-                .UseLoggerFactory(new ServiceCollection()
-                    .AddLogging(cfg => cfg.AddConsole())
-                    .BuildServiceProvider()
-                    .GetRequiredService<ILoggerFactory>())
-                .UseSqlServer(
-                    MigrationsConfig.GetConnectionString()
-                        ?? throw new InvalidOperationException("Connection string missing"),
-                    cfg => cfg.MigrationsAssembly(AssemblyName));
-
-            return new PersistedGrantDbContext(
-                builder.Options,
-                new OperationalStoreOptions
-                {
-                    DefaultSchema = "auth",
-                });
-        }
+        return new PersistedGrantDbContext(
+            builder.Options,
+            new OperationalStoreOptions
+            {
+                DefaultSchema = "auth",
+            });
     }
 }

@@ -1,21 +1,20 @@
 using LncdApp.DomainName.Services.CQRS.Example;
 using Xunit;
 
-namespace LncdApp.DomainName.Services.Tests.CQRS.Example
+namespace LncdApp.DomainName.Services.Tests.CQRS.Example;
+
+public class ExampleCommandCHTests
 {
-    public class ExampleCommandCHTests
+    private readonly ExampleCommandCH handler;
+
+    public ExampleCommandCHTests()
     {
-        private readonly ExampleCommandCH handler;
+        handler = new ExampleCommandCH();
+    }
 
-        public ExampleCommandCHTests()
-        {
-            handler = new ExampleCommandCH();
-        }
-
-        [Fact]
-        public void ImplementMe()
-        {
-            Assert.True(true);
-        }
+    [Fact]
+    public void ImplementMe()
+    {
+        Assert.True(true);
     }
 }

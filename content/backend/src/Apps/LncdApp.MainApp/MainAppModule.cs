@@ -15,97 +15,96 @@ using Microsoft.Extensions.Hosting;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 
-namespace LncdApp.MainApp
+namespace LncdApp.MainApp;
+
+internal class MainAppModule : AppModule
 {
-    internal class MainAppModule : AppModule
+    internal const string MainAppCorsPolicy = "MainApp";
+
+    private readonly IConfiguration config;
+    private readonly IWebHostEnvironment hostEnv;
+
+    public MainAppModule(IConfiguration config, IWebHostEnvironment hostEnv)
     {
-        internal const string MainAppCorsPolicy = "MainApp";
+        this.config = config;
+        this.hostEnv = hostEnv;
+    }
 
-        private readonly IConfiguration config;
-        private readonly IWebHostEnvironment hostEnv;
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        services.AddCors(ConfigureCORS);
+        services.AddRouting();
+        services.AddHealthChecks()
+            .AddDbContextCheck<DomainNameDbContext>();
 
-        public MainAppModule(IConfiguration config, IWebHostEnvironment hostEnv)
+        services.Configure<ForwardedHeadersOptions>(options =>
         {
-            this.config = config;
-            this.hostEnv = hostEnv;
-        }
+            options.ForwardedHeaders = ForwardedHeaders.All;
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+        });
 
-        public override void ConfigureServices(IServiceCollection services)
+        var zipkin = Config.Telemetry.ZipkinEndpoint(config);
+        var otlp = Config.Telemetry.OtlpEndpoint(config);
+
+        if (!string.IsNullOrWhiteSpace(zipkin) || !string.IsNullOrWhiteSpace(otlp))
         {
-            services.AddCors(ConfigureCORS);
-            services.AddRouting();
-            services.AddHealthChecks()
-                .AddDbContextCheck<DomainNameDbContext>();
-
-            services.Configure<ForwardedHeadersOptions>(options =>
+            services.AddOpenTelemetryTracing(builder =>
             {
-                options.ForwardedHeaders = ForwardedHeaders.All;
-                options.KnownNetworks.Clear();
-                options.KnownProxies.Clear();
-            });
-
-            var zipkin = Config.Telemetry.ZipkinEndpoint(config);
-            var otlp = Config.Telemetry.OtlpEndpoint(config);
-
-            if (!string.IsNullOrWhiteSpace(zipkin) || !string.IsNullOrWhiteSpace(otlp))
-            {
-                services.AddOpenTelemetryTracing(builder =>
-                {
-                    builder
-                        .AddAspNetCoreInstrumentation(opts => opts.Filter = ctx =>
-                        {
-                            return !ctx.Request.Path.StartsWithSegments("/live");
-                        })
-                        .AddHttpClientInstrumentation()
-                        .AddSqlClientInstrumentation(opts => opts.SetDbStatementForText = true)
-                        .AddLeanCodeTelemetry()
-                        .SetResourceBuilder(ResourceBuilder.CreateDefault()
-                            .AddService("LncdApp.MainApp"));
-
-                    if (!string.IsNullOrWhiteSpace(otlp))
+                builder
+                    .AddAspNetCoreInstrumentation(opts => opts.Filter = ctx =>
                     {
-                        builder.AddOtlpExporter(cfg => cfg.Endpoint = new(otlp));
-                    }
+                        return !ctx.Request.Path.StartsWithSegments("/live");
+                    })
+                    .AddHttpClientInstrumentation()
+                    .AddSqlClientInstrumentation(opts => opts.SetDbStatementForText = true)
+                    .AddLeanCodeTelemetry()
+                    .SetResourceBuilder(ResourceBuilder.CreateDefault()
+                        .AddService("LncdApp.MainApp"));
 
-                    if (!string.IsNullOrWhiteSpace(zipkin))
-                    {
-                        builder.AddZipkinExporter(cfg => cfg.Endpoint = new(zipkin));
-                    }
-                });
-            }
-
-            services.AddAzureClients(cfg =>
-            {
-                cfg.AddBlobServiceClient(Config.BlobStorage.ConnectionString(config));
-
-                if (!hostEnv.IsDevelopment())
+                if (!string.IsNullOrWhiteSpace(otlp))
                 {
-                    cfg.AddKeyClient(new(Config.KeyVault.VaultUrl(config)));
-                    cfg.AddIdentityServerTokenSigningKey(new(Config.KeyVault.KeyId(config)));
-                    cfg.UseCredential(DefaultLeanCodeCredential.Create(config));
+                    builder.AddOtlpExporter(cfg => cfg.Endpoint = new(otlp));
+                }
+
+                if (!string.IsNullOrWhiteSpace(zipkin))
+                {
+                    builder.AddZipkinExporter(cfg => cfg.Endpoint = new(zipkin));
                 }
             });
         }
 
-        protected override void Load(ContainerBuilder builder)
+        services.AddAzureClients(cfg =>
         {
-            Config.RegisterMappedConfiguration(builder, config, hostEnv);
+            cfg.AddBlobServiceClient(Config.BlobStorage.ConnectionString(config));
 
-            builder.RegisterType<AppRoles>()
-                .AsImplementedInterfaces();
-        }
-
-        private void ConfigureCORS(CorsOptions opts)
-        {
-            opts.AddPolicy(MainAppCorsPolicy, cfg =>
+            if (!hostEnv.IsDevelopment())
             {
-                cfg
-                    .WithOrigins(Config.Services.AllowedOrigins(config))
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .AllowCredentials()
-                    .SetPreflightMaxAge(TimeSpan.FromMinutes(60));
-            });
-        }
+                cfg.AddKeyClient(new(Config.KeyVault.VaultUrl(config)));
+                cfg.AddIdentityServerTokenSigningKey(new(Config.KeyVault.KeyId(config)));
+                cfg.UseCredential(DefaultLeanCodeCredential.Create(config));
+            }
+        });
+    }
+
+    protected override void Load(ContainerBuilder builder)
+    {
+        Config.RegisterMappedConfiguration(builder, config, hostEnv);
+
+        builder.RegisterType<AppRoles>()
+            .AsImplementedInterfaces();
+    }
+
+    private void ConfigureCORS(CorsOptions opts)
+    {
+        opts.AddPolicy(MainAppCorsPolicy, cfg =>
+        {
+            cfg
+                .WithOrigins(Config.Services.AllowedOrigins(config))
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .SetPreflightMaxAge(TimeSpan.FromMinutes(60));
+        });
     }
 }

@@ -1,21 +1,20 @@
 using LncdApp.DomainName.Services.CQRS.Example;
 using Xunit;
 
-namespace LncdApp.DomainName.Services.Tests.CQRS.Example
+namespace LncdApp.DomainName.Services.Tests.CQRS.Example;
+
+public class ExampleCommandCVTests
 {
-    public class ExampleCommandCVTests
+    private readonly ExampleCommandCV validator;
+
+    public ExampleCommandCVTests()
     {
-        private readonly ExampleCommandCV validator;
+        validator = new ExampleCommandCV();
+    }
 
-        public ExampleCommandCVTests()
-        {
-            validator = new ExampleCommandCV();
-        }
-
-        [Fact]
-        public void ImplementMe()
-        {
-            Assert.True(true);
-        }
+    [Fact]
+    public void ImplementMe()
+    {
+        Assert.True(true);
     }
 }

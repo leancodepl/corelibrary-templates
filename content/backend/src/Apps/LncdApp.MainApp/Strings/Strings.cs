@@ -1,4 +1,3 @@
-namespace LncdApp.MainApp.Strings
-{
-    public class Strings { }
-}
+namespace LncdApp.MainApp.Strings;
+
+public class Strings { }

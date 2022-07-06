@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Http;
 
-namespace LncdApp.MainApp.Handlers
+namespace LncdApp.MainApp.Handlers;
+
+public static class ReadinessProbe
 {
-    public static class ReadinessProbe
+    public static Task HandleAsync(HttpContext ctx)
     {
-        public static Task HandleAsync(HttpContext ctx)
-        {
-            ctx.Response.StatusCode = 200;
-            return ctx.Response.WriteAsync("Ready");
-        }
+        ctx.Response.StatusCode = 200;
+        return ctx.Response.WriteAsync("Ready");
     }
 }
