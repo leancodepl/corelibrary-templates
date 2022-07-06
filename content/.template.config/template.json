@@ -212,7 +212,7 @@
         }
       ],
       "args": {
-        "+x": ["*/*.sh", "*/*/*.sh"]
+        "+x": ["../*/*.sh", "../*/*/*.sh"]
       },
       "continueOnError": true
     },
@@ -237,7 +237,7 @@
       ],
       "args": {
         "executable": "dotnet",
-        "args": "format --severity warn",
+        "args": "format --severity warn backend",
         "redirectStandardOutput": false
       },
       "continueOnError": true
