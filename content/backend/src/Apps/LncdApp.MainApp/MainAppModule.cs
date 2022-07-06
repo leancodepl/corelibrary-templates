@@ -58,7 +58,6 @@ namespace LncdApp.MainApp
                         })
                         .AddHttpClientInstrumentation()
                         .AddSqlClientInstrumentation(opts => opts.SetDbStatementForText = true)
-                        .AddMassTransitInstrumentation()
                         .AddLeanCodeTelemetry()
                         .SetResourceBuilder(ResourceBuilder.CreateDefault()
                             .AddService("LncdApp.MainApp"));

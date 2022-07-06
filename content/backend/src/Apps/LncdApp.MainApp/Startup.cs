@@ -60,10 +60,11 @@ namespace LncdApp.MainApp
                     .WithCustomPipelines<DomainNameContext>(
                         AllHandlers,
                         c => c.Trace().Secure().Validate().StoreAndPublishEvents(),
-                        q => q.Trace().Secure().Cache()),
+                        q => q.Trace().Secure().Cache(),
+                        o => o.Trace().Secure().StoreAndPublishEvents()),
                 new FluentValidationModule(AllHandlers),
                 new InMemoryCacheModule(),
-                new MassTransitRelayModule(AllHandlers, Domain, MassTransitConfiguration.ConfigureBus(config, hostEnv)),
+                new LncdAppMassTransitModule(AllHandlers, Domain, config, hostEnv),
                 new LocalizationModule(LocalizationConfiguration.For<Strings.Strings>()),
             };
 

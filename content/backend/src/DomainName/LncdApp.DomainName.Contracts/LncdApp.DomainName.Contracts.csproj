@@ -6,6 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LeanCode.CQRS" />
+    <PackageReference Include="LeanCode.Contracts" />
   </ItemGroup>
 </Project>

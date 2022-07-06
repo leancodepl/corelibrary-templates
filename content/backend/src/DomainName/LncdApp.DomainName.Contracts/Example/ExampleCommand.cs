@@ -1,10 +1,10 @@
-using LeanCode.CQRS;
-using LeanCode.CQRS.Security;
+using LeanCode.Contracts;
+using LeanCode.Contracts.Security;
 
 namespace LncdApp.DomainName.Contracts.Example
 {
     [AllowUnauthorized]
-    public class ExampleCommand : IRemoteCommand
+    public class ExampleCommand : ICommand
     {
         public string Arg { get; set; }
 

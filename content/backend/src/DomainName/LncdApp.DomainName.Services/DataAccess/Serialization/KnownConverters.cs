@@ -1,6 +1,5 @@
-using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace LncdApp.DomainName.Services.DataAccess.Serialization
 {
@@ -8,7 +7,7 @@ namespace LncdApp.DomainName.Services.DataAccess.Serialization
     {
         public static IEnumerable<JsonConverter> All { get; } = Array.Empty<JsonConverter>();
 
-        public static JsonSerializerSettings AddAll(JsonSerializerSettings settings)
+        public static JsonSerializerOptions AddAll(JsonSerializerOptions settings)
         {
             // MassTransit uses static configuration (singleton) so we need not to stomp on our feet
             lock (settings.Converters)
