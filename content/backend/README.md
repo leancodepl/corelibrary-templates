@@ -18,7 +18,7 @@ cd dev/proxy
 ```sh
 cd src/Apps/LncdApp.Migrations
 # This is required for now, but it does not need to point to a real database
-export SqlServer__ConnectionString='Server=localhost,1433;Database=App;User Id=sa;Password=yourStrong(!)Password'
+export SqlServer__ConnectionString='Server=sql.local.lncd.pl,1433;Database=App;User Id=sa;Password=yourStrong(!)Password;Encrypt=false'
 dotnet ef migrations add --context CoreDbContext -o Core InitialMigration # Our context
 dotnet ef migrations add --context PersistedGrantDbContext -o Auth InitialMigration # IdentityServer4
 ```
@@ -38,10 +38,18 @@ Chrome uses a separate certificate store. To add certificate in Chrome:
 2. Import dev/proxy/CA.pem file in the Authorities section.
 3. Select "Trust this certificate for identifying websites".
 
+### 5. Setup the development environment cluster
+
+Related instructions are in the [dev-cluster](../dev-cluster/README.md).
+
 ### 5. Migrate the database and start the app
 
 ```sh
-cd dev
-docker-compose up migrations
-docker-compose up api
+tilt up migrations mainapp
+```
+
+Or run the integration tests:
+
+```sh
+tilt up integration_tests
 ```
