@@ -44,10 +44,9 @@ internal class MainAppModule : AppModule
             options.KnownProxies.Clear();
         });
 
-        var zipkin = Config.Telemetry.ZipkinEndpoint(config);
         var otlp = Config.Telemetry.OtlpEndpoint(config);
 
-        if (!string.IsNullOrWhiteSpace(zipkin) || !string.IsNullOrWhiteSpace(otlp))
+        if (!string.IsNullOrWhiteSpace(otlp))
         {
             services.AddOpenTelemetryTracing(builder =>
             {
@@ -59,18 +58,8 @@ internal class MainAppModule : AppModule
                     .AddHttpClientInstrumentation()
                     .AddSqlClientInstrumentation(opts => opts.SetDbStatementForText = true)
                     .AddLeanCodeTelemetry()
-                    .SetResourceBuilder(ResourceBuilder.CreateDefault()
-                        .AddService("LncdApp.MainApp"));
-
-                if (!string.IsNullOrWhiteSpace(otlp))
-                {
-                    builder.AddOtlpExporter(cfg => cfg.Endpoint = new(otlp));
-                }
-
-                if (!string.IsNullOrWhiteSpace(zipkin))
-                {
-                    builder.AddZipkinExporter(cfg => cfg.Endpoint = new(zipkin));
-                }
+                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("LncdApp.MainApp"))
+                    .AddOtlpExporter(cfg => cfg.Endpoint = new(otlp));
             });
         }
 

@@ -76,7 +76,6 @@ public static class Config
 
     public static class Telemetry
     {
-        public static string? ZipkinEndpoint(IConfiguration cfg) => cfg.GetString("Telemetry:ZipkinEndpoint");
         public static string? OtlpEndpoint(IConfiguration cfg) => cfg.GetString("Telemetry:OtlpEndpoint");
     }
 
