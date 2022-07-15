@@ -18,7 +18,7 @@ cd dev/proxy
 ```sh
 cd src/Apps/LncdApp.Migrations
 # This is required for now, but it does not need to point to a real database
-export SqlServer__ConnectionString='Server=sql.local.lncd.pl,1433;Database=App;User Id=sa;Password=yourStrong(!)Password;Encrypt=false'
+export SqlServer__ConnectionString='Server=localhost,1433;Database=App;User Id=sa;Password=yourStrong(!)Password'
 dotnet ef migrations add --context CoreDbContext -o Core InitialMigration # Our context
 dotnet ef migrations add --context PersistedGrantDbContext -o Auth InitialMigration # IdentityServer4
 ```
