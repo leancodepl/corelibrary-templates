@@ -7,7 +7,7 @@ def dbPassword = 'Passw12#'
 
 leancode.builder('lncdapp-backend')
     .withMonorepoTest(['backend'])
-    .withDocker()
+    .withBuildKit()
     .withDotnet([version: '6.0', image: 'mcr.microsoft.com/dotnet/sdk'])
     .withDefaultContainer(
         name: 'mssql',
@@ -18,6 +18,15 @@ leancode.builder('lncdapp-backend')
         defMemReq: '1Gi',
         defMemLim: '2Gi',
         args: [:])
+    .withDefaultContainer(
+            name: 'storage',
+            image: 'mcr.microsoft.com/azure-storage/azurite',
+            version: '3.15.0',
+            defCpuReq: '100m',
+            defCpuLim: '500m',
+            defMemReq: '100Mi',
+            defMemLim: '500Mi',
+            args: [:])
     .withEnv(envVar(key: 'ACCEPT_EULA', value: 'Y'))
     .withEnv(envVar(key: 'MSSQL_SA_PASSWORD', value: dbPassword))
     .withVolume(emptyDirVolume(mountPath: '/var/opt/mssql', memory: true))
@@ -65,7 +74,7 @@ leancode.builder('lncdapp-backend')
                     dir('tests/LncdApp.IntegrationTests') {
                         env.Domains__Public = 'localhost'
                         env.Domains__ApiInternal = 'localhost'
-                        env.SqlServer__ConnectionStringBase = "Server=localhost,1433;User Id=sa;Password=$dbPassword;Connection Timeout=60"
+                        env.SqlServer__ConnectionStringBase = "Server=localhost,1433;User Id=sa;Password=$dbPassword;Connection Timeout=60;Encrypt=false"
 
                         sh 'dotnet test -c Release -l "trx;LogFileName=$PWD/test-results/integration.trx" -p:MaxParallelThreads=2'
                     }
