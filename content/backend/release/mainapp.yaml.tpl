@@ -21,6 +21,7 @@ spec:
         app: lncdapp
         component: mainapp
         environment: ${ENVIRONMENT}
+        aadpodidbinding: lncdapp-mainapp
     spec:
       containers:
         - name: mainapp
@@ -35,6 +36,14 @@ spec:
           envFrom:
             - secretRef:
                 name: lncdapp-mainapp
+          env:
+            - name: AGENT_HOST_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+            - name: Telemetry__OtlpEndpoint
+              value: http://$(AGENT_HOST_IP):55680
           ports:
             - containerPort: 80
           livenessProbe:

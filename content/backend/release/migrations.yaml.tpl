@@ -13,6 +13,7 @@ spec:
       labels:
         project: lncdapp
         component: migrations
+        aadpodidbinding: lncdapp-migrations
     spec:
       restartPolicy: OnFailure
       containers:
