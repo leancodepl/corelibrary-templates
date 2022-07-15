@@ -18,9 +18,10 @@ ARG APP_VERSION
 
 ENV APP_VERSION=${APP_VERSION}
 
-WORKDIR /app
-COPY Docker.Directory.Build.props Directory.Build.props
+COPY --chown=dotnet out/tests /app/bin
+COPY --chown=dotnet config /app/config
+WORKDIR /app/bin
 
-WORKDIR /app/code/tests
 SHELL ["/bin/bash", "-c"]
-ENTRYPOINT dotnet restore && dotnet watch msbuild /t:RunTests
+# sleep so that the pod is not restarted
+ENTRYPOINT dotnet vstest *.Tests.dll; sleep 3600

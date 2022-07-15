@@ -1,23 +1,24 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: nameLower-migrations
+  name: lncdapp-migrations
   namespace: ${NAMESPACE}
   labels:
-    project: nameLower
+    project: lncdapp
     component: migrations
 spec:
   backoffLimit: 2
   template:
     metadata:
       labels:
-        project: nameLower
+        project: lncdapp
         component: migrations
+        aadpodidbinding: lncdapp-migrations
     spec:
       restartPolicy: OnFailure
       containers:
         - name: migrations
-          image: dockerrepository/nameLower-migrations:${APP_VERSION}
+          image: dockerrepository/lncdapp-migrations:${APP_VERSION}
           resources:
             requests:
               cpu: 50m
@@ -26,5 +27,5 @@ spec:
             - name: SqlServer__ConnectionString
               valueFrom:
                 secretKeyRef:
-                  name: nameLower-migrations
+                  name: lncdapp-migrations
                   key: SqlServer__ConnectionString

@@ -19,8 +19,8 @@ ENV ENVTYPE=Docker
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV APP_VERSION=${APP_VERSION}
 
-WORKDIR /app
-COPY Docker.Directory.Build.props Directory.Build.props
+COPY --chown=dotnet config /app/config
+COPY --chown=dotnet out/migrations /app/bin
 
-WORKDIR /app/code/src/Apps/LNCDApp.Migrations
-ENTRYPOINT /app/code/dev/tools/migrate.sh
+WORKDIR /app/bin
+ENTRYPOINT /app/config/migrate.sh

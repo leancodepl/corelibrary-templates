@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nameLower-mainapp
+  name: lncdapp-mainapp
   namespace: ${NAMESPACE}
   labels:
-    app: nameLower
+    app: lncdapp
     component: mainapp
     environment: ${ENVIRONMENT}
 spec:
   selector:
     matchLabels:
-      app: nameLower
+      app: lncdapp
       component: mainapp
       environment: ${ENVIRONMENT}
   replicas: 1
@@ -18,13 +18,14 @@ spec:
   template:
     metadata:
       labels:
-        app: nameLower
+        app: lncdapp
         component: mainapp
         environment: ${ENVIRONMENT}
+        aadpodidbinding: lncdapp-mainapp
     spec:
       containers:
         - name: mainapp
-          image: dockerrepository/nameLower-mainapp:${APP_VERSION}
+          image: dockerrepository/lncdapp-mainapp:${APP_VERSION}
           resources:
             requests:
               cpu: 50m
@@ -34,7 +35,15 @@ spec:
               memory: 300Mi
           envFrom:
             - secretRef:
-                name: nameLower-mainapp
+                name: lncdapp-mainapp
+          env:
+            - name: AGENT_HOST_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.hostIP
+            - name: Telemetry__OtlpEndpoint
+              value: http://$(AGENT_HOST_IP):55680
           ports:
             - containerPort: 80
           livenessProbe:
@@ -55,10 +64,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: nameLower-mainapp
+  name: lncdapp-mainapp
   namespace: ${NAMESPACE}
   labels:
-    app: nameLower
+    app: lncdapp
     component: mainapp
     environment: ${ENVIRONMENT}
 spec:
@@ -66,6 +75,6 @@ spec:
   ports:
     - port: 80
   selector:
-    app: nameLower
+    app: lncdapp
     component: mainapp
     environment: ${ENVIRONMENT}

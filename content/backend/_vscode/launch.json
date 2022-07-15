@@ -2,18 +2,20 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Attach to MainApp",
+      "name": "Attach to Api",
       "type": "coreclr",
       "request": "attach",
-      "processName": "LNCDApp.MainApp",
+      "processId": "${input:lncdapp_mainapp_pid}",
       "sourceFileMap": {
-        "/app/code": "${workspaceRoot}"
+        "/app/code": "${workspaceFolder}"
       },
       "pipeTransport": {
         "pipeCwd": "${workspaceFolder}",
-        "pipeProgram": "docker",
+        "pipeProgram": "kubectl",
         "quoteArgs": false,
-        "pipeArgs": ["exec -i nameLower-mainapp-1"],
+        "pipeArgs": [
+          "exec -i -n lncdapp-dev --context k3d-lncdapp deployment/lncdapp-mainapp --"
+        ],
         "debuggerPath": "/vsdbg/vsdbg"
       }
     },
@@ -21,19 +23,58 @@
       "name": "Attach to Integration tests",
       "type": "coreclr",
       "request": "attach",
-      "processId": "${command:pickRemoteProcess}",
+      "processId": "${input:lncdapp_tests_pid}",
       "sourceFileMap": {
         "/app/code": "${workspaceFolder}"
       },
       "requireExactSource": false,
+      "justMyCode": false,
       "pipeTransport": {
         "pipeCwd": "${workspaceFolder}",
-        "pipeProgram": "docker",
+        "pipeProgram": "kubectl",
         "quoteArgs": false,
         "pipeArgs": [
-          "exec -i nameLower-integration_tests-1"
+          "exec -i -n lncdapp-dev --context k3d-lncdapp pod/lncdapp-integration-tests --"
         ],
         "debuggerPath": "/vsdbg/vsdbg"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "lncdapp_mainapp_pid",
+      "type": "command",
+      "command": "shellCommand.execute",
+      "args": {
+        "command": "dev/tools/getpid.sh",
+        "fieldSeparator": "|",
+        "description": "Select the process to attach to",
+        "env": {
+          "K8S_CONTEXT": "k3d-lncdapp",
+          "K8S_NS": "lncdapp-dev",
+          "WORKLOAD": "deployment/lncdapp-mainapp",
+          "FILTER": "LncdApp.Api",
+          "HOME": "${env:HOME}",
+          "PATH": "${env:PATH}"
+        }
+      }
+    },
+    {
+      "id": "lncdapp_tests_pid",
+      "type": "command",
+      "command": "shellCommand.execute",
+      "args": {
+        "command": "dev/tools/getpid.sh",
+        "fieldSeparator": "|",
+        "description": "Select the process to attach to",
+        "env": {
+          "K8S_CONTEXT": "k3d-lncdapp",
+          "K8S_NS": "lncdapp-dev",
+          "WORKLOAD": "pod/lncdapp-integration-tests",
+          "FILTER": "LncdApp.IntegrationTests.runtimeconfig.json",
+          "HOME": "${env:HOME}",
+          "PATH": "${env:PATH}"
+        }
       }
     }
   ]

@@ -3,7 +3,7 @@
     <PackageId>$(AssemblyName)</PackageId>
     <RootNamespace>$(AssemblyName)</RootNamespace>
     <Authors>LeanCode</Authors>
-    <Description>LNCDApp Package</Description>
+    <Description>LncdApp Package</Description>
 
     <IncludeSymbols>false</IncludeSymbols>
     <IsPackable>false</IsPackable>
