@@ -54,14 +54,14 @@ public class LncdAppMassTransitModule : MassTransitRelayModule
             }
             else
             {
-                var asbConnString = Config.MassTransit.AzureServiceBusConnectionstring(config);
+                var endpoint = Config.MassTransit.AzureServiceBus.Endpoint(config);
 
                 cfg.AddServiceBusMessageScheduler();
                 cfg.UsingAzureServiceBus((ctx, cfg) =>
                 {
                     cfg.UseDelayedMessageScheduler();
 
-                    cfg.Host(asbConnString, host =>
+                    cfg.Host(new Uri(endpoint), host =>
                     {
                         host.RetryLimit = 5;
                         host.RetryMinBackoff = TimeSpan.FromSeconds(3);

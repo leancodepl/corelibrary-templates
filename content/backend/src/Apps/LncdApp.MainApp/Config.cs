@@ -44,7 +44,10 @@ public static class Config
 
     public static class MassTransit
     {
-        public static string AzureServiceBusConnectionstring(IConfiguration cfg) => cfg.GetString("MassTransit:AzureServiceBusConnectionstring");
+        public static class AzureServiceBus
+        {
+            public static string Endpoint(IConfiguration cfg) => cfg.GetString("MassTransit:AzureServiceBus:Endpoint");
+        }
     }
 
     public static class Services
