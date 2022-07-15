@@ -53,7 +53,7 @@
           "K8S_CONTEXT": "k3d-lncdapp",
           "K8S_NS": "lncdapp-dev",
           "WORKLOAD": "deployment/lncdapp-mainapp",
-          "FILTER": "Kontomierz.Api",
+          "FILTER": "LncdApp.Api",
           "HOME": "${env:HOME}",
           "PATH": "${env:PATH}"
         }
@@ -71,7 +71,7 @@
           "K8S_CONTEXT": "k3d-lncdapp",
           "K8S_NS": "lncdapp-dev",
           "WORKLOAD": "pod/lncdapp-integration-tests",
-          "FILTER": "Kontomierz.IntegrationTests.runtimeconfig.json",
+          "FILTER": "LncdApp.IntegrationTests.runtimeconfig.json",
           "HOME": "${env:HOME}",
           "PATH": "${env:PATH}"
         }
