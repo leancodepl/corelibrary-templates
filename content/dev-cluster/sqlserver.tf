@@ -80,7 +80,7 @@ resource "kubernetes_service_v1" "mssql_service" {
   }
   spec {
     port {
-      port       = 1433
+      port        = 1433
       target_port = 1433
     }
     selector = {

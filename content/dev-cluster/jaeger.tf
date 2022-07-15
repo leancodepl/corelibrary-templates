@@ -24,15 +24,15 @@ resource "kubernetes_deployment_v1" "jaeger_deployment" {
           image = "jaegertracing/all-in-one"
           name  = "jaeger"
           port {
-            name          = "collector-http"
+            name           = "collector-http"
             container_port = 14268
           }
           port {
-            name          = "collector-grpc"
+            name           = "collector-grpc"
             container_port = 14250
           }
           port {
-            name          = "frontend"
+            name           = "frontend"
             container_port = 16686
           }
         }
@@ -54,19 +54,19 @@ resource "kubernetes_service_v1" "jaeger_service" {
       app = "jaeger"
     }
     port {
-      name          = "collector-http"
-      port          = 14268
-      target_port   = 14268
+      name        = "collector-http"
+      port        = 14268
+      target_port = 14268
     }
     port {
-      name          = "collector-grpc"
-      port          = 14250
-      target_port   = 14250
+      name        = "collector-grpc"
+      port        = 14250
+      target_port = 14250
     }
     port {
-      name          = "frontend"
-      port          = 16686
-      target_port   = 16686
+      name        = "frontend"
+      port        = 16686
+      target_port = 16686
     }
   }
 }

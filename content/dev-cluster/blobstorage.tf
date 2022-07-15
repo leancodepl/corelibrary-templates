@@ -93,7 +93,7 @@ resource "kubernetes_service_v1" "blobstorage_service" {
   spec {
     type = "ClusterIP"
     port {
-      port = 80
+      port        = 80
       target_port = 10000
     }
     selector = {
