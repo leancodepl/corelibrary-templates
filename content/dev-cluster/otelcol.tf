@@ -63,15 +63,6 @@ resource "kubernetes_secret" "otel_config" {
       service = {
         extensions = ["health_check"]
         pipelines = {
-          #metrics = {
-          #exporters = ["jaeger"]
-          #processors = [
-          #"resourcedetection",
-          #"k8sattributes",
-          #"batch",
-          #]
-          #receivers = ["otlp"]
-          #},
           traces = {
             exporters = ["jaeger"]
             processors = [
