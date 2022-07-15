@@ -19,14 +19,14 @@ leancode.builder('lncdapp-backend')
         defMemLim: '2Gi',
         args: [:])
     .withDefaultContainer(
-            name: 'storage',
-            image: 'mcr.microsoft.com/azure-storage/azurite',
-            version: '3.15.0',
-            defCpuReq: '100m',
-            defCpuLim: '500m',
-            defMemReq: '100Mi',
-            defMemLim: '500Mi',
-            args: [:])
+        name: 'storage',
+        image: 'mcr.microsoft.com/azure-storage/azurite',
+        version: '3.15.0',
+        defCpuReq: '100m',
+        defCpuLim: '500m',
+        defMemReq: '100Mi',
+        defMemLim: '500Mi',
+        args: [:])
     .withEnv(envVar(key: 'ACCEPT_EULA', value: 'Y'))
     .withEnv(envVar(key: 'MSSQL_SA_PASSWORD', value: dbPassword))
     .withVolume(emptyDirVolume(mountPath: '/var/opt/mssql', memory: true))
