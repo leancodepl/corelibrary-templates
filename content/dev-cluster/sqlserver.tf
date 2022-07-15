@@ -25,10 +25,10 @@ resource "kubernetes_deployment_v1" "mssql_deployment" {
             value = "Y"
           }
           env {
-            name  = "SA_PASSWORD"
+            name  = "MSSQL_SA_PASSWORD"
             value = "Passw12#"
           }
-          image = "mcr.microsoft.com/mssql/server:latest"
+          image = "mcr.microsoft.com/mssql/server:2022-latest"
           name  = "mssql"
           volume_mount {
             mount_path = "/var/opt/mssql"

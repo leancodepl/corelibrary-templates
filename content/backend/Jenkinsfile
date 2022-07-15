@@ -12,14 +12,14 @@ leancode.builder('lncdapp-backend')
     .withDefaultContainer(
         name: 'mssql',
         image: 'leancode.azurecr.io/mssql',
-        version: 'latest',
+        version: '2022-latest',
         defCpuReq: '1',
         defCpuLim: '2',
         defMemReq: '1Gi',
         defMemLim: '2Gi',
         args: [:])
     .withEnv(envVar(key: 'ACCEPT_EULA', value: 'Y'))
-    .withEnv(envVar(key: 'SA_PASSWORD', value: dbPassword))
+    .withEnv(envVar(key: 'MSSQL_SA_PASSWORD', value: dbPassword))
     .withVolume(emptyDirVolume(mountPath: '/var/opt/mssql', memory: true))
     .run {
 
