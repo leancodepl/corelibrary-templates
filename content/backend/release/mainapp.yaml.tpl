@@ -28,7 +28,7 @@ spec:
           image: dockerrepository/lncdapp-mainapp:${APP_VERSION}
           resources:
             requests:
-              cpu: 50m
+              cpu: 200m
               memory: 200Mi
             limits:
               cpu: 500m
