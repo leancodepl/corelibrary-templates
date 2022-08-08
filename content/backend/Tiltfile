@@ -3,7 +3,7 @@ default_registry('k3d-lncdapp-registry.local.lncd.pl:21345')
 
 local_resource(
   'build-mainapp',
-  'dotnet publish --no-build -o dev/out/mainapp src/Apps/LncdApp.MainApp',
+  'dotnet publish  -o dev/out/mainapp src/Apps/LncdApp.MainApp',
   dir='.',
   deps=['src', 'tests', 'LncdApp.sln', 'Directory.Build.targets'],
   ignore=['**/obj', '**/bin'],
@@ -13,7 +13,7 @@ local_resource(
 
 local_resource(
   'build-migrations',
-  'dotnet publish --no-build -o dev/out/migrations src/Apps/LncdApp.Migrations',
+  'dotnet publish  -o dev/out/migrations src/Apps/LncdApp.Migrations',
   dir='.',
   deps=['src', 'tests', 'LncdApp.sln', 'Directory.Build.targets'],
   ignore=['**/obj', '**/bin'],
@@ -23,7 +23,7 @@ local_resource(
 
 local_resource(
   'build-tests',
-  'dotnet publish --no-build -o dev/out/tests tests/LncdApp.Tests.csproj',
+  'dotnet publish  -o dev/out/tests tests/LncdApp.Tests.csproj',
   dir='.',
   deps=['src', 'tests', 'LncdApp.sln', 'Directory.Build.targets'],
   ignore=['**/obj', '**/bin'],
@@ -33,7 +33,7 @@ local_resource(
 
 local_resource(
   'build-integration-tests',
-  'dotnet publish --no-build -o dev/out/integration_tests tests/LncdApp.IntegrationTests',
+  'dotnet publish  -o dev/out/integration_tests tests/LncdApp.IntegrationTests',
   dir='.',
   deps=['src', 'tests/LncdApp.IntegrationTests', 'LncdApp.sln', 'Directory.Build.targets'],
   ignore=['**/obj', '**/bin'],
