@@ -84,7 +84,9 @@ resource "kubernetes_manifest" "blobstorage_pvc" {
 
 resource "kubernetes_service_v1" "blobstorage_service" {
   metadata {
-    name      = "blobstorage-svc"
+    # keep the name in sync with AZURITE_ACCOUNTS, otherwise you get 400 (Invalid storage account.) when calling storage
+    # using cluster local network
+    name      = "blobstorage"
     namespace = local.k8s_blob_namespace
     labels = {
       app = "blobstorage"
